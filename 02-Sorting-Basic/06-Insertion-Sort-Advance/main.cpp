@@ -17,7 +17,7 @@ void insertionSort(T arr[], int n){
         }
         arr[j] = e;
     }
-    return;
+    
 }
 
 int main(){
