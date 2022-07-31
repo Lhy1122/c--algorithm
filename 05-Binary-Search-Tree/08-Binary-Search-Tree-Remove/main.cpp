@@ -108,6 +108,10 @@ public:
             root = removeMax(root);
     }
 
+    void remove(Key key){
+        root = remove(root, key);
+    }
+
 private:
     
     Node* insert(Node *node, Key key, Value value){
@@ -227,42 +231,86 @@ private:
         return node;
     }
 
+    Node* remove(Node* node, Key key){
+
+        if( node == NULL )
+            return NULL;
+
+        if( key < node->key ){
+            node->left = remove( node->left , key );
+            return node;
+        }
+        else if( key > node->key ){
+            node->right = remove( node->right, key );
+            return node;
+        }
+        else{
+
+            if( node->left == NULL ){
+                Node *rightNode = node->right;
+                delete node;
+                count --;
+                return rightNode;
+            }
+
+            if( node->right == NULL ){
+                Node *leftNode = node->left;
+                delete node;
+                count--;
+                return leftNode;
+            }
+
+            Node *successor = new Node(minimum(node->right));
+            count ++;
+
+            successor->right = removeMin(node->right);
+            successor->left = node->left;
+
+            delete node;
+            count --;
+
+            return successor;
+        }
+    }
+
     
 };
+
+void shuffle( int arr[], int n ){
+
+    srand( time(NULL) );
+    for( int i = n-1 ; i >= 0 ; i -- ){
+        int x = rand()%(i+1);
+        swap( arr[i] , arr[x] );
+    }
+}
 
 int main() {
 
     srand(time(NULL));
     BST<int,int> bst = BST<int,int>();
 
-    int N = 10;
-    int M = 100;
-    for( int i = 0 ; i < N ; i ++ ){
-        int key = rand()%M;
+    int n = 10000;
+    for( int i = 0 ; i < n ; i ++ ){
+        int key = rand()%n;
         
         int value = key;
-        cout<<key<<" ";
         bst.insert(key,value);
     }
-    cout<<endl;
+    
+    int order[n];
+    for( int i = 0 ; i < n ; i ++ )
+        order[i] = i;
+    
+    shuffle( order , n );
 
-    cout<<"size: "<<bst.size()<<endl<<endl;
+    for( int i = 0 ; i < n ; i ++ )
+        if( bst.contain( order[i] )){
+            bst.remove( order[i] );
+            cout<<"After remove "<<order[i]<<" size = "<<bst.size()<<endl;
+        }
 
-    cout<<"preOrder: "<<endl;
-    bst.preOrder();
-    cout<<endl;
-
-    cout<<"inOrder: "<<endl;
-    bst.inOrder();
-    cout<<endl;
-
-    cout<<"postOrder: "<<endl;
-    bst.postOrder();
-    cout<<endl;
-
-    cout<<"levelOrder: "<<endl;
-    bst.levelOrder();
-    cout<<endl;
+    cout << bst.size() << endl;
 
     return 0;
 }
