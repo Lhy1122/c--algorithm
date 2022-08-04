@@ -13,7 +13,7 @@ int main() {
     cout<<"test G1 in Sparse Graph:" << endl;
     g1.show();
 
-    cout<<endl;
+    cout<<endl; 
 
     DenseGraph g2( 13 , false );
     ReadGraph<DenseGraph> readGraph2( g2 , filename );
